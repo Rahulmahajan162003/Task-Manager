@@ -11,7 +11,11 @@ const userRoutes = require('./routes/users');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
@@ -27,10 +31,15 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/team_task_
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    // Only listen locally, Vercel will handle the serverless export automatically
+    if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    }
   })
   .catch(err => {
     console.error('Database connection error:', err);
   });
+
+module.exports = app;

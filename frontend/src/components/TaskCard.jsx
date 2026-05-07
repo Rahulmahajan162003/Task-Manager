@@ -24,7 +24,7 @@ const TaskCard = ({ task, token, onUpdate }) => {
   const handleStatusChange = async (e) => {
     const loadingToast = toast.loading('Updating status...');
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/tasks/${task._id}`, 
+      await axios.put(`/api/tasks/${task._id}`, 
         { status: e.target.value },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -40,7 +40,7 @@ const TaskCard = ({ task, token, onUpdate }) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
     const loadingToast = toast.loading('Deleting task...');
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/tasks/${task._id}`, {
+      await axios.delete(`/api/tasks/${task._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Task deleted', { id: loadingToast });
@@ -53,7 +53,7 @@ const TaskCard = ({ task, token, onUpdate }) => {
   const handleSaveEdit = async () => {
     const loadingToast = toast.loading('Saving changes...');
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/tasks/${task._id}`, 
+      await axios.put(`/api/tasks/${task._id}`, 
         { title: editTitle, description: editDescription },
         { headers: { Authorization: `Bearer ${token}` } }
       );
