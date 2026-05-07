@@ -17,14 +17,14 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const [projRes, taskRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/projects', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/tasks', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/projects', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/tasks', { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setProjects(projRes.data);
       setTasks(taskRes.data);
       
       if (user.role === 'Admin') {
-        const userRes = await axios.get('http://localhost:5000/api/users', { headers: { Authorization: `Bearer ${token}` } });
+        const userRes = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users', { headers: { Authorization: `Bearer ${token}` } });
         setUsers(userRes.data);
       }
     } catch (err) {
@@ -41,7 +41,7 @@ const Dashboard = () => {
     e.preventDefault();
     const loadingToast = toast.loading('Creating project...');
     try {
-      await axios.post('http://localhost:5000/api/projects', newProject, {
+      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/projects', newProject, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewProject({ title: '', description: '' });
@@ -59,7 +59,7 @@ const Dashboard = () => {
       const payload = { ...newTask };
       if (!payload.assignedTo) delete payload.assignedTo;
 
-      await axios.post('http://localhost:5000/api/tasks', payload, {
+      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/tasks', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewTask({ title: '', description: '', dueDate: '', project: '', assignedTo: '' });
@@ -74,7 +74,7 @@ const Dashboard = () => {
     if (!window.confirm('Are you sure? This will delete the project and all associated tasks.')) return;
     const loadingToast = toast.loading('Deleting project...');
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${projectId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Project deleted', { id: loadingToast });
